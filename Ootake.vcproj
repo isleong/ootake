@@ -65,7 +65,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="winmm.lib shlwapi.lib Imm32.lib dxguid.lib dinput.lib dsound.lib ddraw.lib d3d9.lib"
+				AdditionalDependencies="winmm.lib shlwapi.lib Imm32.lib dxguid.lib dinput8.lib dsound.lib ddraw.lib d3d9.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -142,7 +142,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				PerUserRedirection="false"
-				AdditionalDependencies="winmm.lib shlwapi.lib Imm32.lib dxguid.lib dinput.lib dsound.lib ddraw.lib d3d9.lib strmiids.lib"
+				AdditionalDependencies="winmm.lib shlwapi.lib Imm32.lib dxguid.lib dinput8.lib dsound.lib ddraw.lib d3d9.lib strmiids.lib"
 				LinkIncremental="1"
 				EnableUAC="false"
 				GenerateDebugInformation="true"

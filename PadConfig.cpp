@@ -36,7 +36,7 @@ Copyright(C)2006-2013 Kitao Nakamura.
 ******************************************************************************/
 #define _CRT_SECURE_NO_DEPRECATE
 
-#define DIRECTINPUT_VERSION	0x0500	//Kitao追加。環境にもよるかもしれないが、DirectInput5が軽い。7だとやや遅延あり。スペースハリアーがわかりやすい。
+#define DIRECTINPUT_VERSION	0x0800	//Kitao追加。環境にもよるかもしれないが、DirectInput5が軽い。7だとやや遅延あり。スペースハリアーがわかりやすい。
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -76,8 +76,8 @@ typedef struct
 
 
 //Kitao追加。DirectInputを使用する。
-static LPDIRECTINPUT			_pDI		= NULL;			// DirectInput インターフェースポインタ
-static LPDIRECTINPUTDEVICE		_pDIDKey	= NULL;			// DirectInput Keyboard device
+static LPDIRECTINPUT8			_pDI		= NULL;			// DirectInput インターフェースポインタ
+static LPDIRECTINPUTDEVICE8		_pDIDKey	= NULL;			// DirectInput Keyboard device
 static LPDIRECTINPUTDEVICE2		_pDIDJoy[N_MAXJOYSTICK];	// DirectInput Joystick device
 
 static Uint32		_FontWidth;
@@ -658,7 +658,7 @@ DIEnumDevicesCallback(
 	LPVOID				pvRef)
 {
 	HRESULT					hResult;
-	LPDIRECTINPUTDEVICE		pDIDJoy; //Kitao追加
+	LPDIRECTINPUTDEVICE8	pDIDJoy; //Kitao追加
 	DIPROPDWORD				diDD;
 
 	//見つかったジョイスティックデバイスを作成する
@@ -757,21 +757,21 @@ padconfig_main()
 	_nJoySticks = 0;
 	ZeroMemory(_Joystick, sizeof(_Joystick));
 	// DirectInputインターフェースを取得する
-	if (DirectInputCreate(WINMAIN_GetHInstance(), DIRECTINPUT_VERSION, &_pDI, NULL) != DI_OK)
+	if (FAILED(DirectInput8Create(WINMAIN_GetHInstance(), DIRECTINPUT_VERSION, IID_IDirectInput8, (void **)&_pDI, NULL)))
 		return FALSE;
 
 	//キーボードデバイスを取得する
-	if (_pDI->CreateDevice(GUID_SysKeyboard, &_pDIDKey, NULL) != DI_OK)
+	if (FAILED(_pDI->CreateDevice(GUID_SysKeyboard, &_pDIDKey, NULL)))
 		return FALSE;
 	//データフォーマットを設定する
-	if (_pDIDKey->SetDataFormat(&c_dfDIKeyboard) != DI_OK)
+	if (FAILED(_pDIDKey->SetDataFormat(&c_dfDIKeyboard)))
 		return FALSE;
 	//協調レベルを指定する
 	hResult=_pDIDKey->SetCooperativeLevel(hWnd, DISCL_NONEXCLUSIVE | DISCL_BACKGROUND);
 	//キーボードのアクセス権を得ておく。
 	_pDIDKey->Acquire();
 	//JoyStickデバイスを列挙する
-	_pDI->EnumDevices(DIDEVTYPE_JOYSTICK, DIEnumDevicesCallback, NULL, DIEDFL_ATTACHEDONLY);
+	_pDI->EnumDevices(DI8DEVTYPE_JOYSTICK, DIEnumDevicesCallback, NULL, DIEDFL_ATTACHEDONLY);
 	if (_nJoySticks == 0)
 		add_text("PADCONFIG: No supported joystick found.");
 	else
